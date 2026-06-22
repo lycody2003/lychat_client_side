@@ -6,7 +6,7 @@ on:
 
 jobs:
   test:
-    runs-on: bento/ubuntu-22.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -24,7 +24,7 @@ jobs:
         run: npm run test:unit
 
   build:
-    runs-on: bento/ubuntu-22.04
+    runs-on: ubuntu-22.04
     needs: test
     steps:
       - name: Checkout code
@@ -43,7 +43,7 @@ jobs:
         run: npm run build
 
   docker:
-    runs-on: bento/ubuntu-22.04
+    runs-on: ubuntu-22.04
     needs: build
     steps:
       - name: Checkout code
