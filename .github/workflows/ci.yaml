@@ -63,7 +63,7 @@ jobs:
         with:
           context: .
           push: true
-          platforms: linux/amd64,linux/arm64 # ✅ បន្ថែម line នេះ
+          platforms: linux/amd64,linux/arm64
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/portfolio:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/portfolio:${{ github.sha }}
