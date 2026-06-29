@@ -1,8 +1,8 @@
 <template>
   <div class="msg-row" :class="{ mine: isMine }">
-    <div v-if="!isMine" class="avatar">{{ initials(message.sender?.username) }}</div>
+    <div v-if="!isMine" class="avatar">{{ initials(senderUsername) }}</div>
     <div class="bubble-wrap">
-      <span v-if="!isMine" class="sender-name">{{ message.sender?.username }}</span>
+      <span v-if="!isMine" class="sender-name">{{ senderUsername }}</span>
       <div class="bubble" :class="{ mine: isMine }">
         <p>{{ message.text }}</p>
       </div>
@@ -12,17 +12,24 @@
 </template>
 
 <script setup lang="ts">
-defineProps({
-  message: Object,
-  isMine: Boolean,
+import { computed } from "vue";
+import type { Message } from "../types/chat";
+
+const props = defineProps<{
+  message: Message;
+  isMine: boolean;
+}>();
+
+const senderUsername = computed<string | undefined>(() => {
+  if (!props.message.sender || typeof props.message.sender === "string") return undefined;
+  return props.message.sender.username;
 });
 
-
-function initials(name) {
+function initials(name?: string): string {
   return name ? name.slice(0, 2).toUpperCase() : "?";
 }
 
-function formatTime(date) {
+function formatTime(date?: string | Date): string {
   if (!date) return "";
   return new Date(date).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }

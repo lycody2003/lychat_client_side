@@ -11,23 +11,13 @@
     </header>
 
     <div class="messages" ref="messagesEl">
-      <MessageBubble
-        v-for="msg in messages"
-        :key="msg._id"
-        :message="msg"
-        :is-mine="msg.sender?._id === currentUserId || msg.sender === currentUserId"
-      />
+      <MessageBubble v-for="msg in messages" :key="msg._id" :message="msg" :is-mine="isMine(msg.sender)" />
       <p v-if="room && !messages.length" class="empty-state">No messages yet. Say hi! 👋</p>
       <p v-if="!room" class="empty-state">Pick a channel from the sidebar to start chatting.</p>
     </div>
 
     <form v-if="room" class="input-bar" @submit.prevent="send">
-      <input
-        v-model="text"
-        type="text"
-        placeholder="Type a message..."
-        @input="onTyping"
-      />
+      <input v-model="text" type="text" placeholder="Type a message..." @input="onTyping" />
       <button type="submit" :disabled="!text.trim()">➤</button>
     </form>
   </main>
@@ -36,17 +26,37 @@
 <script setup lang="ts">
 import { ref, watch, nextTick } from "vue";
 import MessageBubble from "./MessageBubble.vue";
+import type { Message, MessageSender } from "../types/chat";
 
-defineProps({
-  room: Object,
-  messages: { type: Array, default: () => [] },
-  currentUserId: String,
-  typingUsers: { type: Array, default: () => [] },
+interface Room {
+  _id: string;
+  name: string;
+  description?: string;
+}
+
+const props = withDefaults(defineProps < {
+  room?: Room;
+  messages?: Message[];
+  currentUserId?: string;
+  typingUsers?: string[];
+} > (), {
+  messages: () => [],
+  typingUsers: () => [],
 });
-defineEmits(["send", "typing"]);
+
+const emit = defineEmits < {
+  send: [text: string];
+  typing: [active: boolean];
+} > ();
 
 const text = ref("");
-const messagesEl = ref(null);
+const messagesEl = ref < HTMLDivElement | null > (null);
+
+function isMine(sender?: MessageSender | string): boolean {
+  if (!props.currentUserId || !sender) return false;
+  if (typeof sender === "string") return sender === props.currentUserId;
+  return sender._id === props.currentUserId;
+}
 
 function send() {
   if (!text.value.trim()) return;
@@ -54,10 +64,10 @@ function send() {
   text.value = "";
 }
 
-let typingTimeout = null;
+let typingTimeout: ReturnType<typeof setTimeout> | null = null;
 function onTyping() {
   emit("typing", true);
-  clearTimeout(typingTimeout);
+  clearTimeout(typingTimeout ?? undefined);
   typingTimeout = setTimeout(() => emit("typing", false), 1500);
 }
 
@@ -162,6 +172,12 @@ watch(
   cursor: not-allowed;
 }
 
-.messages::-webkit-scrollbar { width: 6px; }
-.messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+.messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
 </style>

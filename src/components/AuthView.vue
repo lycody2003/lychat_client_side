@@ -30,11 +30,16 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useAuth } from "../composables/useAuth";
+import type { AuthUser } from "../composables/useAuth";
+import type { AxiosError } from "axios";
 
-defineEmits(["authenticated"]);
+const emit = defineEmits<{ authenticated: [user: AuthUser] }>();
+
 const { login, register } = useAuth();
 
-const mode = ref("login");
+type Mode = "login" | "register";
+
+const mode = ref<Mode>("login");
 const username = ref("");
 const email = ref("");
 const password = ref("");
@@ -45,13 +50,14 @@ async function submit() {
   error.value = "";
   loading.value = true;
   try {
-    const user =
+    const user: AuthUser =
       mode.value === "login"
         ? await login(email.value, password.value)
         : await register(username.value, email.value, password.value);
     emit("authenticated", user);
   } catch (err) {
-    error.value = err.response?.data?.message || "Something went wrong";
+    const axiosErr = err as AxiosError<{ message: string }>;
+    error.value = axiosErr.response?.data?.message ?? "Something went wrong";
   } finally {
     loading.value = false;
   }

@@ -11,7 +11,7 @@
         <p class="name">{{ user?.username }}</p>
         <p class="status">● Online</p>
       </div>
-      <button class="logout-btn" @click="$emit('logout')" title="Logout">⏻</button>
+      <button class="logout-btn" @click="emit('logout')" title="Logout">⏻</button>
     </div>
 
     <div class="panel-tabs">
@@ -35,7 +35,7 @@
           v-for="room in rooms"
           :key="room._id"
           :class="{ active: room._id === activeRoomId }"
-          @click="$emit('select-room', room)"
+          @click="emit('select-room', room)"
         >
           <span class="hash">#</span>
           <span class="room-name">{{ room.name }}</span>
@@ -44,22 +44,36 @@
       </ul>
     </template>
 
-    <FriendsPanel v-else @open-dm="(f) => $emit('open-dm', f)" />
+    <FriendsPanel v-else @open-dm="(f) => emit('open-dm', f)" />
   </aside>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
 import FriendsPanel from "./FriendsPanel.vue";
+import type { AuthUser } from "../composables/useAuth";
 
-defineProps({
-  user: Object,
-  rooms: { type: Array, default: () => [] },
-  activeRoomId: String,
-});
-defineEmits(["select-room", "create-room", "logout", "open-dm"]);
+interface Room {
+  _id: string;
+  name: string;
+}
 
-const tab = ref("channels");
+type SidebarTab = "channels" | "friends";
+
+defineProps<{                        // ← removed `const props =`
+  user: AuthUser | null;
+  rooms: Room[];
+  activeRoomId?: string;
+}>();
+
+const emit = defineEmits<{
+  "select-room": [room: Room];
+  "create-room": [name: string];
+  logout: [];
+  "open-dm": [friend: AuthUser];
+}>();
+
+const tab = ref<SidebarTab>("channels");
 const showCreate = ref(false);
 const newRoomName = ref("");
 
@@ -70,7 +84,7 @@ function createRoom() {
   showCreate.value = false;
 }
 
-function initials(name) {
+function initials(name?: string): string {
   return name ? name.slice(0, 2).toUpperCase() : "?";
 }
 </script>

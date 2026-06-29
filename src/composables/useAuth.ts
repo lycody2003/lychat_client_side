@@ -1,7 +1,19 @@
 import { ref } from "vue";
 import api from "./api";
 
-function safeGet(key) {
+export interface AuthUser {
+  _id: string;
+  username: string;
+  email?: string;
+  status?: string;
+}
+
+interface AuthResponse {
+  token: string;
+  user: AuthUser;
+}
+
+function safeGet(key: string): string | null {
   try {
     return typeof localStorage !== "undefined" ? localStorage.getItem(key) : null;
   } catch {
@@ -9,40 +21,38 @@ function safeGet(key) {
   }
 }
 
-function safeSet(key, value) {
+function safeSet(key: string, value: string): void {
   try {
     if (typeof localStorage !== "undefined") localStorage.setItem(key, value);
-  } catch {
-  }
+  } catch {}
 }
 
-function safeRemove(key) {
+function safeRemove(key: string): void {
   try {
     if (typeof localStorage !== "undefined") localStorage.removeItem(key);
-  } catch {
-  }
+  } catch {}
 }
 
-const user = ref(JSON.parse(safeGet("lychat_user") || "null"));
+const user = ref<AuthUser | null>(JSON.parse(safeGet("lychat_user") ?? "null"));
 
 export function useAuth() {
-  async function login(email, password) {
-    const { data } = await api.post("/auth/login", { email, password });
+  async function login(email: string, password: string): Promise<AuthUser> {
+    const { data } = await api.post<AuthResponse>("/auth/login", { email, password });
     safeSet("lychat_token", data.token);
     safeSet("lychat_user", JSON.stringify(data.user));
     user.value = data.user;
     return data.user;
   }
 
-  async function register(username, email, password) {
-    const { data } = await api.post("/auth/register", { username, email, password });
+  async function register(username: string, email: string, password: string): Promise<AuthUser> {
+    const { data } = await api.post<AuthResponse>("/auth/register", { username, email, password });
     safeSet("lychat_token", data.token);
     safeSet("lychat_user", JSON.stringify(data.user));
     user.value = data.user;
     return data.user;
   }
 
-  function logout() {
+  function logout(): void {
     api.post("/auth/logout").catch(() => {});
     safeRemove("lychat_token");
     safeRemove("lychat_user");

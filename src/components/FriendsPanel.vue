@@ -41,18 +41,33 @@
 import { ref, onMounted } from "vue";
 import api from "../composables/api";
 
-defineEmits(["open-dm"]);
+interface User {
+  _id: string;
+  username: string;
+  status?: string;
+}
+
+interface FriendRequest {
+  _id: string;
+  from: User;
+}
+
+defineEmits<{ "open-dm": [friend: User] }>();
 
 const query = ref("");
-const searchResults = ref([]);
-const friends = ref([]);
-const incomingRequests = ref([]);
+const searchResults = ref<User[]>([]);
+const friends = ref<User[]>([]);
+const incomingRequests = ref<FriendRequest[]>([]);
 
-let searchTimeout = null;
+let searchTimeout: ReturnType<typeof setTimeout> | null = null;
+
 function search() {
-  clearTimeout(searchTimeout);
+  clearTimeout(searchTimeout ?? undefined);
   searchTimeout = setTimeout(async () => {
-    if (!query.value.trim()) return (searchResults.value = []);
+    if (!query.value.trim()) {
+      searchResults.value = [];
+      return;
+    }
     const { data } = await api.get("/friends/search", { params: { q: query.value.trim() } });
     searchResults.value = data;
   }, 300);
@@ -68,23 +83,23 @@ async function loadRequests() {
   incomingRequests.value = data;
 }
 
-async function addFriend(userId) {
+async function addFriend(userId: string) {
   await api.post("/friends/requests", { toUserId: userId });
   searchResults.value = searchResults.value.filter((u) => u._id !== userId);
 }
 
-async function accept(requestId) {
+async function accept(requestId: string) {
   await api.post(`/friends/requests/${requestId}/accept`);
   incomingRequests.value = incomingRequests.value.filter((r) => r._id !== requestId);
   await loadFriends();
 }
 
-async function reject(requestId) {
+async function reject(requestId: string) {
   await api.post(`/friends/requests/${requestId}/reject`);
   incomingRequests.value = incomingRequests.value.filter((r) => r._id !== requestId);
 }
 
-function initials(name) {
+function initials(name: string) {
   return name ? name.slice(0, 2).toUpperCase() : "?";
 }
 
@@ -95,98 +110,3 @@ onMounted(() => {
 
 defineExpose({ loadFriends, loadRequests });
 </script>
-
-<style scoped>
-.friends-panel {
-  padding: 12px 14px;
-  overflow-y: auto;
-  flex: 1;
-  font-family: "Inter", system-ui, sans-serif;
-}
-
-.search-box input {
-  width: 100%;
-  padding: 9px 12px;
-  border-radius: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
-  font-size: 13px;
-  outline: none;
-  margin-bottom: 14px;
-}
-.search-box input:focus { border-color: #7c4dff; }
-
-.section { margin-bottom: 18px; }
-
-.section h4 {
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: #6c6c84;
-  margin: 0 0 8px;
-}
-
-.row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 7px 6px;
-  border-radius: 8px;
-}
-
-.row.clickable { cursor: pointer; }
-.row.clickable:hover { background: rgba(255, 255, 255, 0.05); }
-
-.avatar {
-  position: relative;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #5b8cff, #7c4dff);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
-  color: white;
-  flex-shrink: 0;
-}
-
-.dot {
-  position: absolute;
-  bottom: -2px;
-  right: -2px;
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: #5a5a70;
-  border: 2px solid #14151f;
-}
-.dot.on { background: #4ade80; }
-
-.uname {
-  flex: 1;
-  font-size: 13.5px;
-  color: #d8d8e8;
-}
-
-.small-btn {
-  border: none;
-  border-radius: 6px;
-  padding: 5px 10px;
-  font-size: 11.5px;
-  font-weight: 600;
-  cursor: pointer;
-  background: #7c4dff;
-  color: white;
-}
-
-.small-btn.accept { background: #22c55e; }
-.small-btn.reject { background: #ef4444; padding: 5px 9px; }
-
-.empty {
-  color: #5a5a70;
-  font-size: 12.5px;
-}
-</style>
