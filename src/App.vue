@@ -2,7 +2,7 @@
   <AuthView v-if="!user" @authenticated="onAuthenticated" />
 
   <div v-else class="app-layout">
-    <Sidebar
+    <ChatSidebar
       :user="user"
       :rooms="rooms"
       :active-room-id="activeRoom?._id"
@@ -25,7 +25,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import AuthView from "./components/AuthView.vue";
-import Sidebar from "./components/Sidebar.vue";
+import ChatSidebar from "./components/ChatSidebar.vue";
 import ChatWindow from "./components/ChatWindow.vue";
 import { useAuth } from "./composables/useAuth";
 import { useSocket } from "./composables/useSocket";
