@@ -65,8 +65,8 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/portfolio:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/portfolio:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/lychat_client_side:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/lychat_client_side:${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -81,11 +81,11 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/portfolio:${{ github.sha }}
-            docker stop portfolio || true
-            docker rm portfolio || true
+            docker pull ${{ secrets.DOCKERHUB_USERNAME }}/lychat_client_side:${{ github.sha }}
+            docker stop lychat_client_side || true
+            docker rm lychat_client_side || true
             docker run -d \
-              --name portfolio \
+              --name lychat_client_side \
               -p 3000:80 \
               --restart unless-stopped \
-              ${{ secrets.DOCKERHUB_USERNAME }}/portfolio:${{ github.sha }}
+              ${{ secrets.DOCKERHUB_USERNAME }}/lychat_client_side:${{ github.sha }}
