@@ -37,11 +37,11 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted } from "vue";
 import api from "../composables/api";
 
-const emit = defineEmits(["open-dm"]);
+defineEmits(["open-dm"]);
 
 const query = ref("");
 const searchResults = ref([]);

@@ -5,7 +5,12 @@ let socket = null;
 export function useSocket() {
   function connect() {
     if (socket) return socket;
-    const token = localStorage.getItem("lychat_token");
+    let token = null;
+    try {
+      token = typeof localStorage !== "undefined" ? localStorage.getItem("lychat_token") : null;
+    } catch {
+      token = null;
+    }
     socket = io(import.meta.env.VITE_SOCKET_URL || "http://localhost:5000", {
       auth: { token },
     });

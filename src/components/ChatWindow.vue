@@ -33,17 +33,17 @@
   </main>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, watch, nextTick } from "vue";
 import MessageBubble from "./MessageBubble.vue";
 
-const props = defineProps({
+defineProps({
   room: Object,
   messages: { type: Array, default: () => [] },
   currentUserId: String,
   typingUsers: { type: Array, default: () => [] },
 });
-const emit = defineEmits(["send", "typing"]);
+defineEmits(["send", "typing"]);
 
 const text = ref("");
 const messagesEl = ref(null);

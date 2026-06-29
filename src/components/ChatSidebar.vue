@@ -48,16 +48,16 @@
   </aside>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import FriendsPanel from "./FriendsPanel.vue";
 
-const props = defineProps({
+defineProps({
   user: Object,
   rooms: { type: Array, default: () => [] },
   activeRoomId: String,
 });
-const emit = defineEmits(["select-room", "create-room", "logout", "open-dm"]);
+defineEmits(["select-room", "create-room", "logout", "open-dm"]);
 
 const tab = ref("channels");
 const showCreate = ref(false);

@@ -11,11 +11,12 @@
   </div>
 </template>
 
-<script setup>
-const props = defineProps({
+<script setup lang="ts">
+defineProps({
   message: Object,
   isMine: Boolean,
 });
+
 
 function initials(name) {
   return name ? name.slice(0, 2).toUpperCase() : "?";

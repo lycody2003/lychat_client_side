@@ -22,7 +22,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from "vue";
 import AuthView from "./components/AuthView.vue";
 import Sidebar from "./components/Sidebar.vue";
@@ -38,7 +38,7 @@ const rooms = ref([]);
 const activeRoom = ref(null);
 const messages = ref([]);
 const typingUsernames = ref([]);
-let typingClearTimers = {};
+const typingClearTimers = {};
 
 async function onAuthenticated() {
   await bootstrap();
@@ -111,9 +111,7 @@ function bindSocketEvents() {
     }, 2000);
   });
 
-  socket.on("typing:stop", ({ roomId, userId }) => {
-    // optional: remove immediately if you track by userId instead of username
-  });
+
 }
 
 function onLogout() {

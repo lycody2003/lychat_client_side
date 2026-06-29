@@ -5,6 +5,6 @@ import App from '../App.vue'
 describe('App', () => {
   it('mounts renders properly', () => {
     const wrapper = mount(App)
-    expect(wrapper.text()).toContain('Hello Lycody')
+    expect(wrapper.text()).toContain('Lychat')
   })
 })

@@ -27,11 +27,11 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import { useAuth } from "../composables/useAuth";
 
-const emit = defineEmits(["authenticated"]);
+defineEmits(["authenticated"]);
 const { login, register } = useAuth();
 
 const mode = ref("login");

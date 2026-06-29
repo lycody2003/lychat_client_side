@@ -5,7 +5,12 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("lychat_token");
+  let token = null;
+  try {
+    token = typeof localStorage !== "undefined" ? localStorage.getItem("lychat_token") : null;
+  } catch {
+    token = null;
+  }
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
