@@ -54,6 +54,8 @@ async function submit() {
       mode.value === "login"
         ? await login(email.value, password.value)
         : await register(username.value, email.value, password.value);
+
+    console.log("User : ", user);
     emit("authenticated", user);
   } catch (err) {
     const axiosErr = err as AxiosError<{ message: string }>;

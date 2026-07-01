@@ -1,10 +1,10 @@
 <template>
   <AuthView v-if="!user" @authenticated="onAuthenticated" />
-
+  
   <div v-else class="app-layout">
     <ChatSidebar :user="user" :rooms="rooms" :active-room-id="activeRoom?._id" @select-room="selectRoom"
       @create-room="createRoom" @logout="onLogout" @open-dm="openDM" />
-    <ChatWindow :room="activeRoom || undefined" :messages="messages" :current-user-id="user?._id"
+    <ChatWindow :room="activeRoom || undefined" :messages="messages" :current-user-id="user._id"
       :typing-users="typingUsernames" @send="sendMessage" @typing="handleTyping" />
   </div>
 </template>

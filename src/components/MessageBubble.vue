@@ -1,12 +1,27 @@
 <template>
   <div class="msg-row" :class="{ mine: isMine }">
-    <div v-if="!isMine" class="avatar">{{ initials(senderUsername) }}</div>
-    <div class="bubble-wrap">
-      <span v-if="!isMine" class="sender-name">{{ senderUsername }}</span>
+    <!-- Friend Avatar -->
+    <div v-if="!isMine" class="avatar">
+      {{ initials(senderUsername) }}
+    </div>
+
+    <div class="content">
+      <span v-if="!isMine" class="sender-name">
+        {{ senderUsername }}
+      </span>
+
       <div class="bubble" :class="{ mine: isMine }">
-        <p>{{ message.text }}</p>
+        {{ message.text }}
       </div>
-      <span class="time">{{ formatTime(message.createdAt) }}</span>
+
+      <span class="time">
+        {{ formatTime(message.createdAt) }}
+      </span>
+    </div>
+
+    <!-- Optional avatar for myself -->
+    <div v-if="isMine" class="avatar mine-avatar">
+      Me
     </div>
   </div>
 </template>
@@ -38,65 +53,82 @@ function formatTime(date?: string | Date): string {
 <style scoped>
 .msg-row {
   display: flex;
-  gap: 10px;
-  margin-bottom: 14px;
   align-items: flex-end;
+  width: 100%;
+  margin: 12px 0;
+  gap: 10px;
 }
 
-.msg-row.mine {
-  flex-direction: row-reverse;
+/* Friend */
+.msg-row:not(.mine) {
+  justify-content: flex-start;
 }
+
+/* Me */
+.msg-row.mine {
+  justify-content: flex-end;
+}
+
+/* Avatar */
 
 .avatar {
-  width: 30px;
-  height: 30px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #5b8cff, #7c4dff);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  font-weight: 700;
+  background: linear-gradient(135deg, #7c4dff, #5b8cff);
   color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 700;
+  font-size: 12px;
   flex-shrink: 0;
 }
 
-.bubble-wrap {
-  display: flex;
-  flex-direction: column;
-  max-width: 60%;
+.mine-avatar {
+  background: linear-gradient(135deg, #00c896, #00d4ff);
 }
 
-.msg-row.mine .bubble-wrap {
+.content {
+  display: flex;
+  flex-direction: column;
+  max-width: 70%;
+}
+
+.msg-row.mine .content {
   align-items: flex-end;
 }
 
 .sender-name {
-  font-size: 11.5px;
-  color: #8e8ea3;
-  margin-bottom: 3px;
-  padding-left: 4px;
+  font-size: 12px;
+  color: #9aa1b5;
+  margin-bottom: 4px;
+  padding-left: 6px;
 }
 
 .bubble {
-  padding: 10px 14px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.06);
-  color: #e6e6f0;
-  font-size: 14px;
-  line-height: 1.4;
+  max-width: 100%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  background: #272b36;
+  color: #fff;
+  line-height: 1.5;
   word-break: break-word;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, .15);
+
+  border-bottom-left-radius: 6px;
 }
 
 .bubble.mine {
   background: linear-gradient(135deg, #7c4dff, #5b8cff);
-  color: white;
+  border-bottom-left-radius: 18px;
+  border-bottom-right-radius: 6px;
 }
 
 .time {
-  font-size: 10.5px;
-  color: #5a5a70;
-  margin-top: 3px;
-  padding: 0 4px;
+  font-size: 11px;
+  color: #7b8196;
+  margin-top: 4px;
+  padding: 0 6px;
 }
 </style>

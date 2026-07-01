@@ -110,3 +110,132 @@ onMounted(() => {
 
 defineExpose({ loadFriends, loadRequests });
 </script>
+
+<style scoped>
+.friends-panel {
+  width: 320px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  padding: 16px;
+  overflow-y: auto;
+}
+
+.search-box input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  outline: none;
+  font-size: 14px;
+  transition: .2s;
+}
+
+.search-box input:focus {
+  border-color: #4f46e5;
+}
+
+.section {
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .05);
+}
+
+.section h4 {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: #f8f8f8;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 8px;
+  transition: .2s;
+}
+
+.row:not(:last-child) {
+  margin-bottom: 8px;
+}
+
+.clickable {
+  cursor: pointer;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #94a3b8;
+  position: absolute;
+  bottom: 1px;
+  right: 1px;
+  border: 2px solid white;
+}
+
+.dot.on {
+  background: #22c55e;
+}
+
+.uname {
+  flex: 1;
+  font-weight: 500;
+  color: #ffffff;
+}
+
+.small-btn {
+  border: none;
+  background: #6366f1;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: .2s;
+}
+
+.small-btn:hover {
+  background: #4f46e5;
+}
+
+.accept {
+  background: #22c55e;
+}
+
+.accept:hover {
+  background: #16a34a;
+}
+
+.reject {
+  background: #ef4444;
+}
+
+.reject:hover {
+  background: #dc2626;
+}
+
+.empty {
+  color: #94a3b8;
+  font-size: 14px;
+  text-align: center;
+  padding: 20px 0;
+}
+</style>
