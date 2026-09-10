@@ -72,7 +72,7 @@ jobs:
             VITE_SOCKET_URL=http://api.lychat.com
 
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/lychat_client_side:1.0.3
+            ${{ secrets.DOCKERHUB_USERNAME }}/lychat_client_side:1.0.0
             ${{ secrets.DOCKERHUB_USERNAME }}/lychat_client_side:${{ github.sha }}
 
           cache-from: type=gha
